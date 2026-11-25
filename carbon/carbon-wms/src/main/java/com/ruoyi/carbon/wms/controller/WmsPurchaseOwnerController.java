@@ -1,0 +1,128 @@
+package com.ruoyi.carbon.wms.controller;
+
+import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
+import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
+import com.ruoyi.carbon.wms.domain.WmsPurchaseOwner;
+import com.ruoyi.carbon.wms.service.IWmsPurchaseOwnerService;
+import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * 货主信息Controller
+ *
+ * @author ruoyi
+ * @date 2023-05-10
+ */
+@Api(tags = {"货主信息"})
+@RestController
+@RequestMapping("/wms/owner")
+public class WmsPurchaseOwnerController extends BaseController {
+    @Autowired
+    private IWmsPurchaseOwnerService wmsPurchaseOwnerService;
+
+    /**
+     * 查询货主信息列表
+     */
+    @GetMapping("/list")
+    @ApiOperation("查询货主信息列表")
+    @DynamicResponseParameters(name = "wmsOwnerList",
+            properties = {
+                    @DynamicParameter(name = "total", value = "总记录数"),
+                    @DynamicParameter(name = "code", value = "状态码，200正确，其他错误"),
+                    @DynamicParameter(name = "rows", value = "返回业务数据（数组类型）", dataTypeClass = WmsPurchaseOwner.class),
+                    @DynamicParameter(name = "msg", value = "返回消息内容")
+            })
+    public TableDataInfo list(WmsPurchaseOwner wmsPurchaseOwner) {
+        startPage();
+        List<WmsPurchaseOwner> list = wmsPurchaseOwnerService.selectWmsPurchaseOwnerList(wmsPurchaseOwner);
+        return getDataTable(list);
+    }
+
+    /**
+     * 导出货主信息列表
+     */
+    @ApiOperation("导出货主信息列表")
+    @DynamicResponseParameters(properties = {
+            @DynamicParameter(name = "code", value = "状态码，200正确，其他错误"),
+            @DynamicParameter(name = "msg", value = "文件名")
+    })
+    @PreAuthorize("@ss.hasPermi('wms:owner:export')")
+    @Log(title = "货主信息", businessType = BusinessType.EXPORT)
+    @GetMapping("/export")
+    public AjaxResult export(WmsPurchaseOwner wmsPurchaseOwner) {
+        List<WmsPurchaseOwner> list = wmsPurchaseOwnerService.selectWmsPurchaseOwnerList(wmsPurchaseOwner);
+        ExcelUtil<WmsPurchaseOwner> util = new ExcelUtil<WmsPurchaseOwner>(WmsPurchaseOwner.class);
+        return util.exportExcel(list, "owner");
+    }
+
+    /**
+     * 获取货主信息详细信息
+     */
+    @ApiOperation("获取货主信息详细信息")
+    @DynamicResponseParameters(name = "wmsOwnerGet",
+            properties = {
+                    @DynamicParameter(name = "code", value = "状态码，200正确，其他错误"),
+                    @DynamicParameter(name = "data", value = "返回业务数据", dataTypeClass = WmsPurchaseOwner.class),
+                    @DynamicParameter(name = "msg", value = "返回消息内容")
+            })
+    @GetMapping(value = "/{id}")
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
+        return AjaxResult.success(wmsPurchaseOwnerService.selectWmsPurchaseOwnerById(id));
+    }
+
+    /**
+     * 新增货主信息
+     */
+    @ApiOperation("新增货主信息")
+    @DynamicResponseParameters(properties = {
+            @DynamicParameter(name = "code", value = "状态码，200正确，其他错误"),
+            @DynamicParameter(name = "msg", value = "返回消息内容")
+    })
+    @PreAuthorize("@ss.hasPermi('wms:owner:add')")
+    @Log(title = "货主信息", businessType = BusinessType.INSERT)
+    @PostMapping
+    public AjaxResult add(@RequestBody WmsPurchaseOwner wmsPurchaseOwner) {
+        return toAjax(wmsPurchaseOwnerService.insertWmsPurchaseOwner(wmsPurchaseOwner));
+    }
+
+    /**
+     * 修改货主信息
+     */
+    @ApiOperation("修改货主信息")
+    @DynamicResponseParameters(properties = {
+            @DynamicParameter(name = "code", value = "状态码，200正确，其他错误"),
+            @DynamicParameter(name = "msg", value = "返回消息内容")
+    })
+    @PreAuthorize("@ss.hasPermi('wms:owner:edit')")
+    @Log(title = "货主信息", businessType = BusinessType.UPDATE)
+    @PutMapping
+    public AjaxResult edit(@RequestBody WmsPurchaseOwner wmsPurchaseOwner) {
+        return toAjax(wmsPurchaseOwnerService.updateWmsPurchaseOwner(wmsPurchaseOwner));
+    }
+
+    /**
+     * 删除货主信息
+     */
+    @ApiOperation("删除货主信息")
+    @DynamicResponseParameters(properties = {
+            @DynamicParameter(name = "code", value = "状态码，200正确，其他错误"),
+            @DynamicParameter(name = "msg", value = "返回消息内容")
+    })
+    @PreAuthorize("@ss.hasPermi('wms:owner:remove')")
+    @Log(title = "货主信息", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
+        return toAjax(wmsPurchaseOwnerService.deleteWmsPurchaseOwnerByIds(ids));
+    }
+}

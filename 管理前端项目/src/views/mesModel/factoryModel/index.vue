@@ -2,106 +2,80 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="生产线名称" prop="productLineName">
-        <el-input
-            v-model="queryParams.productLineName"
-            placeholder="请输入生产线名称"
-            clearable
-            @keyup.enter="handleQuery"
-        />
+        <el-input v-model="queryParams.productLineName" placeholder="请输入生产线名称" clearable @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="Search" >搜索</el-button>
+        <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-            type="primary"
-            plain
-            icon="Plus"
-            @click="handleAdd"
-            v-hasPermi="['mesModel:factoryModel:add']"
-        >新增
+        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['mesModel:factoryModel:add']">新增
         </el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-            type="success"
-            plain
-            icon="Edit"
-            :disabled="single"
-            @click="handleUpdate"
-            v-hasPermi="['mesModel:factoryModel:edit']"
-        >修改
+        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate"
+          v-hasPermi="['mesModel:factoryModel:edit']">修改
         </el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-            type="danger"
-            plain
-            icon="Delete"
-            :disabled="multiple"
-            @click="handleDelete"
-            v-hasPermi="['mesModel:factoryModel:remove']"
-        >删除
+        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete"
+          v-hasPermi="['mesModel:factoryModel:remove']">删除
         </el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-            type="warning"
-            plain
-            icon="Download"
-            @click="handleExport"
-            v-hasPermi="['mesModel:factoryModel:export']"
-        >导出
+        <el-button type="warning" plain icon="Download" @click="handleExport"
+          v-hasPermi="['mesModel:factoryModel:export']">导出
         </el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="factoryModelList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="编号" align="center" prop="id"/>
-      <el-table-column label="物料档案编号" align="center" prop="materialId"/>
-      <el-table-column label="生产线名称" align="center" prop="productLineName"/>
-      <el-table-column label="描述" align="center" prop="remark"/>
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="产品" align="center" prop="materialName" />
+      <el-table-column label="生产线名称" align="center" prop="productLineName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)"
-                     v-hasPermi="['mesModel:factoryModel:edit']">修改
+            v-hasPermi="['mesModel:factoryModel:edit']">修改
           </el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"
-                     v-hasPermi="['mesModel:factoryModel:remove']">删除
+            v-hasPermi="['mesModel:factoryModel:remove']">删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-        v-show="total>0"
-        :total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
-        @pagination="getList"
-    />
+    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum"
+      v-model:limit="queryParams.pageSize" @pagination="getList" />
 
     <!-- 添加或修改工厂建模对话框 -->
     <el-dialog :title="title" v-model="open" width="1000px" append-to-body>
-      <el-form ref="factoryModelRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="物料档案编号" prop="materialId">
-          <el-input v-model="form.materialId" placeholder="请选择物料档案编号" disabled>
-            <template #append>
-              <el-button v-no-more-click @click="selectMaterialSelectOpen()">选择</el-button>
-            </template>
-          </el-input>
-        </el-form-item>
+      <el-form ref="factoryModelRef" :model="form" :rules="rules" label-width="92px">
         <el-form-item label="生产线名称" prop="productLineName">
-          <el-input v-model="form.productLineName" placeholder="请输入生产线名称"/>
+          <el-input v-model="form.productLineName" placeholder="请输入生产线名称" />
         </el-form-item>
-        <el-form-item label="描述" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入描述"/>
+        <el-row>
+          <el-form-item label="产品" prop="materialId">
+            <el-input v-model="form.materialName" placeholder="请选择产品" disabled>
+              <template #append>
+                <el-button v-no-more-click @click="selectMaterialSelectOpen()">选择</el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="产品型号" prop="productModel">
+            <el-input v-model="form.productModel" placeholder="请输入生产线名称" disabled/>
+          </el-form-item>
+          <el-form-item label="产品规格" prop="productSpecification">
+            <el-input v-model="form.productSpecification" placeholder="请输入生产线名称" disabled/>
+          </el-form-item>
+        </el-row>
+        <el-form-item label="描述">
+          <editor v-model="form.remark" :min-height="192" />
         </el-form-item>
         <el-divider content-position="center">工厂建模明细信息</el-divider>
         <el-row :gutter="10" class="mb8">
@@ -113,19 +87,41 @@
           </el-col>
         </el-row>
         <el-table :data="mesFactoryModelDetailList" :row-class-name="rowMesFactoryModelDetailIndex"
-                  @selection-change="handleMesFactoryModelDetailSelectionChange" ref="mesFactoryModelDetail">
-          <el-table-column type="selection" width="50" align="center"/>
-          <el-table-column label="序号" align="center" prop="index" width="50"/>
-          <el-table-column label="设备编号" prop="equipmentId" width="180">
+          @selection-change="handleMesFactoryModelDetailSelectionChange" ref="mesFactoryModelDetail">
+          <el-table-column type="selection" width="50" align="center" />
+          <el-table-column label="序号" align="center" prop="index" width="50" />
+          <el-table-column label="设备" prop="equipmentId" width="180">
             <template #default="scope">
-              <el-select v-model="scope.row.equipmentId" placeholder="请选择设备编号" clearable>
-                <el-option
-                    v-for="item in  equipmentIdQuery"
-                    :key="item.dictValue"
-                    :label="item.dictLabel"
-                    :value="item.dictValue"
-                />
+              <el-select v-model="scope.row.equipmentId" placeholder="请选择设备" clearable
+                @change="handleEquipmentChange(scope.row.equipmentId, scope.$index)">
+                <el-option v-for="item in equipmentIdQuery" :key="item.dictValue" :label="item.dictLabel"
+                  :value="parseInt(item.dictValue)" />
               </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column label="编码" prop="equipment">
+            <template #default="scope">
+              <el-input v-model="scope.row.equipmentCode" placeholder="请选择设备" disabled />
+            </template>
+          </el-table-column>
+          <el-table-column label="型号" prop="equipment">
+            <template #default="scope">
+              <el-input v-model="scope.row.equipmentModel" placeholder="请选择设备" disabled />
+            </template>
+          </el-table-column>
+          <el-table-column label="生产日期" prop="equipment">
+            <template #default="scope">
+              <el-input v-model="scope.row.equipmentProductDate" placeholder="请选择设备" disabled />
+            </template>
+          </el-table-column>
+          <el-table-column label="生产批号" prop="equipment">
+            <template #default="scope">
+              <el-input v-model="scope.row.equipmentBatchNo" placeholder="请选择设备" disabled />
+            </template>
+          </el-table-column>
+          <el-table-column label="制造商" prop="equipment">
+            <template #default="scope">
+              <el-input v-model="scope.row.equipmentManufacturer" placeholder="请选择设备" disabled />
             </template>
           </el-table-column>
         </el-table>
@@ -138,40 +134,39 @@
       </template>
     </el-dialog>
     <MaterialSelect :open="MaterialSelectOpen" @onCancel="handleMaterialSelectCancel"
-                    @onSelected="handleMaterialSelectSelected">
+      @onSelected="handleMaterialSelectSelected">
     </MaterialSelect>
   </div>
 </template>
 
 <script setup name="FactoryModel">
-import {
-  addFactoryModel,
-  delFactoryModel,
-  exportFactoryModel,
-  getFactoryModel,
-  listFactoryModel,
-  updateFactoryModel
-} from "@/api/mesModel/factoryModel";
-import {ElMessageBox} from 'element-plus'
+import { listFactoryModel, getFactoryModel, delFactoryModel, addFactoryModel, updateFactoryModel, exportFactoryModel } from "@/api/mesModel/factoryModel";
+import { getEquipmentInfo } from "@/api/baseInfo/equipmentInfo";
+import { ElMessageBox } from 'element-plus';
 import MaterialSelect from "@/components/Material/MaterialSelect";
-
-const {proxy} = getCurrentInstance();
-
-
-const equipmentIdQuery = ref([])
+const { proxy } = getCurrentInstance();
+const equipmentIdQuery = ref([]);
 proxy.getQueryData("query_equipment").then(res => {
-  equipmentIdQuery.value = res.data
-})
-const MaterialSelectOpen = ref(false)
+  equipmentIdQuery.value = res.data;
+});
+const MaterialSelectOpen = ref(false);
 const handleMaterialSelectCancel = () => {
   MaterialSelectOpen.value = false;
-}
+};
 const selectMaterialSelectOpen = () => {
   MaterialSelectOpen.value = true;
-}
+};
 const handleMaterialSelectSelected = (row) => {
+  let material = row[0];
+  let f = form.value;
+
+  f.materialName = material.name;
+  f.productModel = material.model;
+  f.productSpecification = material.specification;
+  f.materialId = material.id;
+
   MaterialSelectOpen.value = false;
-}
+};
 
 const factoryModelList = ref([]);
 const mesFactoryModelDetailList = ref([]);
@@ -184,17 +179,26 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
+
 const data = reactive({
   form: {},
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    materialId: null, productLineName: null,
+    materialId: null,
+    productLineName: null,
   },
-  rules: {}
+  rules: {
+    materialId: [
+      { required: true, message: "产品不能为空", trigger: "blur" }
+    ],
+    productLineName: [
+      { required: true, message: "生产线名称不能为空", trigger: "blur" }
+    ],
+  }
 });
 
-const {queryParams, form, rules} = toRefs(data);
+const { queryParams, form, rules } = toRefs(data);
 
 /** 查询工厂建模列表 */
 function getList() {
@@ -215,7 +219,10 @@ function cancel() {
 // 表单重置
 function reset() {
   form.value = {
-    id: null, materialId: null, productLineName: null, remark: null
+    id: null,
+    materialId: null,
+    productLineName: null,
+    remark: null,
   };
   mesFactoryModelDetailList.value = [];
   proxy.resetForm("factoryModelRef");
@@ -238,6 +245,19 @@ function handleSelectionChange(selection) {
   ids.value = selection.map(item => item.id);
   single.value = selection.length != 1;
   multiple.value = !selection.length;
+}
+
+function handleEquipmentChange(equipmentId, index) {
+  getEquipmentInfo(equipmentId).then(res => {
+    let f = mesFactoryModelDetailList.value[index];
+    let equipment = res.data;
+    f.equipmentBatchNo = equipment.batchNo;
+    f.equipmentCode = equipment.code;
+    f.equipmentManufacturer = equipment.manufacturer;
+    f.equipmentProductDate = equipment.productDate;
+    f.equipmentModel = equipment.model;
+    f.equipmentId = equipment.id;
+  });
 }
 
 /** 新增按钮操作 */
@@ -288,12 +308,11 @@ function handleDelete(row) {
   }).then(() => {
     getList();
     proxy.$modal.msgSuccess("删除成功");
-  }).catch(() => {
-  });
+  }).catch(() => { });
 }
 
 /** 工厂建模明细序号 */
-function rowMesFactoryModelDetailIndex({row, rowIndex}) {
+function rowMesFactoryModelDetailIndex({ row, rowIndex }) {
   row.index = rowIndex + 1;
 }
 
@@ -329,13 +348,11 @@ function handleExport() {
     cancelButtonText: "取消",
     type: "warning"
   }).then(function () {
-    return exportFactoryModel(val).then(res => {
+    return exportFactoryModel(queryParams.value).then(res => {
       proxy.download(res.msg);
     });
   })
 }
 
 getList();
-
-
 </script>

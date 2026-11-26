@@ -2,8 +2,12 @@ package com.ruoyi.carbon.mes.controller;
 
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
+import com.ruoyi.carbon.mes.domain.MesEquipment;
 import com.ruoyi.carbon.mes.domain.MesFactoryModel;
+import com.ruoyi.carbon.mes.service.IMesEquipmentService;
 import com.ruoyi.carbon.mes.service.IMesFactoryModelService;
+import com.ruoyi.carbon.wms.domain.WmsMaterialInfo;
+import com.ruoyi.carbon.wms.service.IWmsMaterialInfoService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -31,6 +35,12 @@ public class MesFactoryModelController extends BaseController {
     @Autowired
     private IMesFactoryModelService mesFactoryModelService;
 
+    @Autowired
+    private IWmsMaterialInfoService wmsMaterialInfoService;
+
+    @Autowired
+    private IMesEquipmentService mesEquipmentService;
+
     /**
      * 查询工厂建模列表
      */
@@ -45,6 +55,16 @@ public class MesFactoryModelController extends BaseController {
     public TableDataInfo list(MesFactoryModel mesFactoryModel) {
         startPage();
         List<MesFactoryModel> list = mesFactoryModelService.selectMesFactoryModelList(mesFactoryModel);
+
+        list.forEach(model -> {
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(model.getMaterialId());
+            if (materialInfo!=null) {
+                model.setMaterialName(materialInfo.getName());
+                model.setProductModel(materialInfo.getModel());
+                model.setProductSpecification(materialInfo.getSpecification());
+            }
+        });
+
         return getDataTable(list);
     }
 
@@ -77,6 +97,26 @@ public class MesFactoryModelController extends BaseController {
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         MesFactoryModel model = mesFactoryModelService.selectMesFactoryModelById(id);
+        WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(model.getMaterialId());
+        if (materialInfo!=null) {
+            model.setMaterialName(materialInfo.getName());
+            model.setProductModel(materialInfo.getModel());
+            model.setProductSpecification(materialInfo.getSpecification());
+        }
+        model.getMesFactoryModelDetailList().forEach(detail -> {
+            MesEquipment equipment = mesEquipmentService.selectMesEquipmentById(detail.getEquipmentId());
+
+            if (equipment != null) {
+                detail.setEquipmentProductDate(equipment.getProductDate());
+                detail.setEquipmentName(equipment.getName());
+                detail.setEquipmentManufacturer(equipment.getManufacturer());
+                detail.setEquipmentModel(equipment.getModel());
+                detail.setEquipmentBatchNo(equipment.getBatchNo());
+                detail.setEquipmentStatus(equipment.getStatus());
+                detail.setEquipmentCode(equipment.getCode());
+            }
+        });
+
         return AjaxResult.success(model);
     }
 

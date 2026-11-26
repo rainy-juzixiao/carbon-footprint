@@ -15,7 +15,6 @@ import java.math.BigDecimal;
  * @date 2022-07-05
  */
 @ApiModel("发货单明细")
-@Data
 public class ScmSaleDeliveryDetail extends BaseEntity
 {
 
@@ -77,4 +76,100 @@ public class ScmSaleDeliveryDetail extends BaseEntity
     @ApiModelProperty("物料单价")
     @Excel(name = "物料单价")
     private BigDecimal materialPrice;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getDeliveryId() {
+        return deliveryId;
+    }
+
+    public void setDeliveryId(Long deliveryId) {
+        this.deliveryId = deliveryId;
+    }
+
+    public Long getMaterialId() {
+        return materialId;
+    }
+
+    public void setMaterialId(Long materialId) {
+        this.materialId = materialId;
+    }
+
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+    public Double getReturnQuantity() {
+        return returnQuantity;
+    }
+
+    public void setReturnQuantity(Double returnQuantity) {
+        this.returnQuantity = returnQuantity;
+    }
+
+    public String getDetailRemark() {
+        return detailRemark;
+    }
+
+    public void setDetailRemark(String detailRemark) {
+        this.detailRemark = detailRemark;
+    }
+
+    public String getMaterialCode() {
+        return materialCode;
+    }
+
+    public void setMaterialCode(String materialCode) {
+        this.materialCode = materialCode;
+    }
+
+    public String getMaterialName() {
+        return materialName;
+    }
+
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
+    }
+
+    public String getMaterialModel() {
+        return materialModel;
+    }
+
+    public void setMaterialModel(String materialModel) {
+        this.materialModel = materialModel;
+    }
+
+    public String getMaterialSpecification() {
+        return materialSpecification;
+    }
+
+    public void setMaterialSpecification(String materialSpecification) {
+        this.materialSpecification = materialSpecification;
+    }
+
+    public String getMaterialUnit() {
+        return materialUnit;
+    }
+
+    public void setMaterialUnit(String materialUnit) {
+        this.materialUnit = materialUnit;
+    }
+
+    public BigDecimal getMaterialPrice() {
+        return materialPrice;
+    }
+
+    public void setMaterialPrice(BigDecimal materialPrice) {
+        this.materialPrice = materialPrice;
+    }
 }

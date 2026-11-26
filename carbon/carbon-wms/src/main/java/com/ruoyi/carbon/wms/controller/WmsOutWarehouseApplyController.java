@@ -6,9 +6,11 @@ import com.ruoyi.carbon.mes.domain.MesMaterialRequisition;
 import com.ruoyi.carbon.mes.service.IMesMaterialRequisitionService;
 import com.ruoyi.carbon.scm.domain.ScmSaleDelivery;
 import com.ruoyi.carbon.scm.service.IScmSaleDeliveryService;
+import com.ruoyi.carbon.wms.domain.WmsMaterialInfo;
 import com.ruoyi.carbon.wms.domain.WmsOutWarehouseApply;
 import com.ruoyi.carbon.wms.domain.WmsOutWarehouseApplyDetail;
 import com.ruoyi.carbon.wms.domain.WmsWarehouseMaterialDetail;
+import com.ruoyi.carbon.wms.service.IWmsMaterialInfoService;
 import com.ruoyi.carbon.wms.service.IWmsOutWarehouseApplyService;
 import com.ruoyi.carbon.wms.service.IWmsWarehouseMaterialDetailService;
 import com.ruoyi.common.annotation.Log;
@@ -48,6 +50,8 @@ public class WmsOutWarehouseApplyController extends BaseController {
     private IScmSaleDeliveryService saleDeliveryService;
     @Autowired
     private IMesMaterialRequisitionService requisitionService;
+    @Autowired
+    private IWmsMaterialInfoService wmsMaterialInfoService;
 
     /**
      * 查询出库申请列表
@@ -162,6 +166,16 @@ public class WmsOutWarehouseApplyController extends BaseController {
         }
         List<WmsOutWarehouseApplyDetail> applyDetail = apply.getWmsOutWarehouseApplyDetailList();
         this.getBizBillNo(apply);
+        applyDetail.forEach(detail -> {
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(detail.getMaterialId());
+            if (materialInfo != null) {
+                detail.setMaterialModel(materialInfo.getModel());
+                detail.setMaterialCode(materialInfo.getCode());
+                detail.setMaterialSpecification(materialInfo.getSpecification());
+                detail.setMaterialName(materialInfo.getName());
+                detail.setMaterialUnit(materialInfo.getUnit());
+            }
+        });
         return AjaxResult.success(apply);
     }
 

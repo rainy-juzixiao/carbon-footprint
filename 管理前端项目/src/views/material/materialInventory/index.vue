@@ -3,15 +3,15 @@
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="物料名称" prop="materialName">
         <el-input v-model="queryParams.materialName" placeholder="请输入物料名称" clearable
-                  @keyup.enter.native="handleQuery"/>
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="型号" prop="materialModel">
         <el-input v-model="queryParams.materialModel" placeholder="请输入物料型号" clearable
-                  @keyup.enter.native="handleQuery"/>
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="规格" prop="materialSpecification">
         <el-input v-model="queryParams.materialSpecification" placeholder="请输入物料规格" clearable
-                  @keyup.enter.native="handleQuery"/>
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleQuery">搜索</el-button>
@@ -27,49 +27,47 @@
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" plain :disabled="single" @click="handleUpdate"
-                   v-hasPermi="['material:materialInventory:edit']">修改
+          v-hasPermi="['material:materialInventory:edit']">修改
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" plain :disabled="multiple" @click="handleDelete"
-                   v-hasPermi="['material:materialInventory:remove']">删除
+          v-hasPermi="['material:materialInventory:remove']">删除
         </el-button>
       </el-col>
 
     </el-row>
 
     <el-table v-loading="loading" :row-class-name="tableRowClassName" :data="materialInventoryList"
-              @selection-change="handleSelectionChange">
-      <el-table-column type="selection"  align="center"/>
-      <el-table-column label="编号" align="center" prop="id"/>
-      <el-table-column label="仓库" align="center" prop="warehouseId" :formatter="warehouseIdFormat" width="200"/>
-      <el-table-column label="物料编号" align="center" prop="materialCode" width="200"/>
-      <el-table-column label="物料名称" align="center" prop="materialName" width="200"/>
-      <el-table-column label="物料型号" align="center" prop="materialModel" width="200"/>
-      <el-table-column label="物料规格" align="center" prop="materialSpecification" width="200"/>
-      <el-table-column label="物料单位" align="center" prop="materialUnit" width="200"/>
-      <el-table-column label="物料单价" align="center" prop="materialPrice" width="200"/>
-      <el-table-column label="总库存" align="center" prop="totalInventory" width="200"/>
-      <el-table-column label="锁定库存" align="center" prop="freezeInventory" width="200"/>
-      <el-table-column label="库存上限" align="center" prop="maxInventory" width="200"/>
-      <el-table-column label="库存下限" align="center" prop="minInventory" width="200"/>
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" align="center" />
+      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="仓库" align="center" prop="warehouseId" :formatter="warehouseIdFormat" width="200" />
+      <el-table-column label="物料编号" align="center" prop="materialCode" width="200" />
+      <el-table-column label="物料名称" align="center" prop="materialName" width="200" />
+      <el-table-column label="物料型号" align="center" prop="materialModel" width="200" />
+      <el-table-column label="物料规格" align="center" prop="materialSpecification" width="200" />
+      <el-table-column label="物料单位" align="center" prop="materialUnit" width="200" />
+      <el-table-column label="物料单价" align="center" prop="materialPrice" width="200" />
+      <el-table-column label="总库存" align="center" prop="totalInventory" width="200" />
+      <el-table-column label="锁定库存" align="center" prop="freezeInventory" width="200" />
+      <el-table-column label="库存上限" align="center" prop="maxInventory" width="200" />
+      <el-table-column label="库存下限" align="center" prop="minInventory" width="200" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200">
         <template #default="scope">
           <el-button type="text" icon="el-icon-shopping-cart-full" @click="handleMove(scope.row)"
-                     v-hasPermi="['material:materialInventory:edit']">移库
+            v-hasPermi="['material:materialInventory:edit']">移库
           </el-button>
-          <el-button type="text" @click="handleUpdate(scope.row)"
-                     v-hasPermi="['material:materialInventory:edit']">修改
+          <el-button type="text" @click="handleUpdate(scope.row)" v-hasPermi="['material:materialInventory:edit']">修改
           </el-button>
-          <el-button type="text" @click="handleDelete(scope.row)"
-                     v-hasPermi="['material:materialInventory:remove']">删除
+          <el-button type="text" @click="handleDelete(scope.row)" v-hasPermi="['material:materialInventory:remove']">删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
-                @pagination="getList"/>
+    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+      @pagination="getList" />
 
     <!-- 添加或修改仓库物料信息对话框 -->
     <el-dialog :title="title" :model-value="open" width="1000px" append-to-body>
@@ -77,15 +75,15 @@
         <el-form-item label="物料名称" prop="materialName">
           <el-input v-model="form.materialName" placeholder="请选择物料" disabled>
             <template #append>
-                <el-button slot="append" @click="handleSelectMaterial">选择</el-button>
+              <el-button slot="append" @click="handleSelectMaterial">选择</el-button>
             </template>
           </el-input>
         </el-form-item>
         <el-form-item label="仓库" prop="warehouseId">
           <el-select v-model="form.warehouseId" placeholder="请选择仓库" clearable filterable
-                     @change="handleWarehouseChange">
+            @change="handleWarehouseChange">
             <el-option v-for="dict in warehouseIdOptions" :key="dict.dictValue" :label="dict.dictLabel"
-                       :value="parseInt(dict.dictValue)"></el-option>
+              :value="parseInt(dict.dictValue)"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="物料编码" prop="materialCode">
@@ -105,16 +103,16 @@
           </el-input>
         </el-form-item>
         <el-form-item label="总库存" prop="totalInventory">
-          <el-input v-model="form.totalInventory" disabled/>
+          <el-input v-model="form.totalInventory" disabled />
         </el-form-item>
         <el-form-item label="锁定库存" prop="freezeInventory">
-          <el-input v-model="form.freezeInventory" disabled/>
+          <el-input v-model="form.freezeInventory" disabled />
         </el-form-item>
         <el-form-item label="库存上限" prop="maxInventory">
-          <el-input v-model.number="form.maxInventory" placeholder="请输入库存上限"/>
+          <el-input v-model.number="form.maxInventory" placeholder="请输入库存上限" />
         </el-form-item>
         <el-form-item label="库存下限" prop="minInventory">
-          <el-input v-model.number="form.minInventory" placeholder="请输入库存下限"/>
+          <el-input v-model.number="form.minInventory" placeholder="请输入库存下限" />
         </el-form-item>
         <el-divider content-position="center">仓库物料明细信息</el-divider>
         <el-row :gutter="10" class="mb8">
@@ -126,44 +124,44 @@
           </el-col>
         </el-row>
         <el-table :data="wmsWarehouseMaterialDetailList" :row-class-name="rowWmsWarehouseMaterialDetailIndex"
-                  @selection-change="handleWmsWarehouseMaterialDetailSelectionChange" ref="wmsWarehouseMaterialDetail">
-          <el-table-column type="selection"  align="center"/>
-          <el-table-column label="序号" align="center" prop="index" width="200"/>
+          @selection-change="handleWmsWarehouseMaterialDetailSelectionChange" ref="wmsWarehouseMaterialDetail">
+          <el-table-column type="selection" align="center" />
+          <el-table-column label="序号" align="center" prop="index" width="200" />
           <el-table-column label="库区" prop="whRegionId" width="200">
             <template #default="scope">
-              <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.whRegionId'"
-                            :rules="rules.whRegionId">
+              <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.whRegionId'"
+                :rules="rules.whRegionId">
                 <el-select v-model="scope.row.whRegionId" placeholder="请选择库区" filterable
-                           @change="handleWhRegionChange(scope.row.whRegionId,scope.$index)">
+                  @change="handleWhRegionChange(scope.row.whRegionId, scope.$index)">
                   <el-option v-for="dict in scope.row.whRegionOptions" :key="dict.id" :label="dict.name"
-                             :value="dict.id"/>
+                    :value="dict.id" />
                 </el-select>
               </el-form-item>
             </template>
           </el-table-column>
           <el-table-column label="库位" prop="whLocationId" width="200">
             <template #default="scope">
-              <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.whLocationId'"
-                            :rules="rules.whLocationId">
+              <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.whLocationId'"
+                :rules="rules.whLocationId">
                 <el-select v-model="scope.row.whLocationId" placeholder="请选择库位" filterable>
                   <el-option v-for="dict in scope.row.whLocationOptions" :key="dict.id" :label="dict.name"
-                             :value="dict.id"/>
+                    :value="dict.id" />
                 </el-select>
               </el-form-item>
             </template>
           </el-table-column>
           <el-table-column label="现有库存" prop="inventory" width="200">
             <template #default="scope">
-              <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.inventory'"
-                            :rules="rules.inventory">
-                <el-input v-model.number="scope.row.inventory" placeholder="请输入库存量"/>
+              <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.inventory'"
+                :rules="rules.inventory">
+                <el-input v-model.number="scope.row.inventory" placeholder="请输入库存量" />
               </el-form-item>
             </template>
           </el-table-column>
           <el-table-column label="锁定库存" prop="lockInventory" width="200">
             <template #default="scope">
-              <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.lockInventory'">
-                <el-input v-model.number="scope.row.lockInventory" placeholder="" disabled/>
+              <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.lockInventory'">
+                <el-input v-model.number="scope.row.lockInventory" placeholder="" disabled />
               </el-form-item>
             </template>
           </el-table-column>
@@ -177,52 +175,47 @@
           </el-table-column>
           <el-table-column label="生产日期" prop="productDate" width="200">
             <template #default="scope">
-              <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.productDate'">
+              <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.productDate'">
                 <el-date-picker clearable v-model="scope.row.productDate" type="date" value-format="yyyy-MM-dd"
-                                placeholder="请选择生产日期"/>
+                  placeholder="请选择生产日期" />
               </el-form-item>
             </template>
           </el-table-column>
           <el-table-column label="生产厂家" prop="manufacturer" width="200">
             <template #default="scope">
-              <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.manufacturer'">
-                <el-input v-model="scope.row.manufacturer" placeholder="请输入生产厂家"/>
+              <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.manufacturer'">
+                <el-input v-model="scope.row.manufacturer" placeholder="请输入生产厂家" />
               </el-form-item>
             </template>
           </el-table-column>
           <el-table-column label="生产批号" prop="batchNo" width="200">
             <template #default="scope">
-              <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.batchNo'" :rules="rules.batchNo">
-                <el-input v-model="scope.row.batchNo" placeholder="请输入生产批号"/>
+              <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.batchNo'" :rules="rules.batchNo">
+                <el-input v-model="scope.row.batchNo" placeholder="请输入生产批号" />
               </el-form-item>
             </template>
           </el-table-column>
           <el-table-column label="备注" prop="remark" width="200">
             <template #default="scope">
-              <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.remark'">
-                <el-input v-model="scope.row.remark" placeholder="请输入备注"/>
+              <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.remark'">
+                <el-input v-model="scope.row.remark" placeholder="请输入备注" />
               </el-form-item>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="200">
-            <template #default="scope">
-              <el-button type="text" @click="handleTag(scope.row)"
-                         v-hasPermi="['material:materialInventoryDetail:edit']">标签
-              </el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-form>
-      <template slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
       </template>
     </el-dialog>
     <!--选择物料档案-->
-    <MaterialSelect :open="materialSelectOpen" @onCancel="handleMaterialCancel"
-                    @onSelected="handleMaterialSelected"></MaterialSelect>
+    <MaterialSelect :open="materialSelectOpen" @onCancel="handleMaterialCancel" @onSelected="handleMaterialSelected">
+    </MaterialSelect>
     <move :open="moveOpen" :billId="inventoryId" @onCancel="handleCancel"></move>
-    <TagView :open="tagOpen" :material="tagMaterial" @onCancel="handleTagCancel"></TagView>
+    <!-- 不再需要物料标签模板 -->
   </div>
 </template>
 
@@ -235,18 +228,16 @@ import {
   listMaterialInventory,
   updateMaterialInventory
 } from "@/api/material/materialInventory";
-import {listWarehouseRegion} from "@/api/warehouse/warehouseRegion";
-import {listWarehouseLocation} from "@/api/warehouse/warehouseLocation";
+import { listWarehouseRegion } from "@/api/warehouse/warehouseRegion";
+import { listWarehouseLocation } from "@/api/warehouse/warehouseLocation";
 import MaterialSelect from "@/components/Material/MaterialSelect";
 import Move from "./move";
-import TagView from "../materialTag/view.vue";
 
 export default {
   name: "MaterialInventory",
   components: {
     MaterialSelect,
-    Move,
-    TagView
+    Move
   },
   data() {
     return {
@@ -298,38 +289,38 @@ export default {
       // 表单校验
       rules: {
         materialName: [
-          {required: true, message: "物料名称不能为空", trigger: "blur"}
+          { required: true, message: "物料名称不能为空", trigger: "blur" }
         ],
         warehouseId: [
-          {required: true, message: "仓库不能为空", trigger: "blur"}
+          { required: true, message: "仓库不能为空", trigger: "blur" }
         ],
         whRegionId: [
-          {required: true, message: "库区不能为空", trigger: "blur"}
+          { required: true, message: "库区不能为空", trigger: "blur" }
         ],
         whLocationId: [
-          {required: true, message: "库位不能为空", trigger: "blur"}
+          { required: true, message: "库位不能为空", trigger: "blur" }
         ],
         inventory: [
-          {required: true, message: "库存不能为空", trigger: "blur"},
-          {type: 'number', min: 0, max: 65535, message: '库存必须为数字值且大小要在1到65535'},
+          { required: true, message: "库存不能为空", trigger: "blur" },
+          { type: 'number', min: 0, max: 65535, message: '库存必须为数字值且大小要在1到65535' },
         ],
         batchNo: [
-          {required: true, message: "生产批号不能为空", trigger: "blur"}
+          { required: true, message: "生产批号不能为空", trigger: "blur" }
         ],
         maxInventory: [
-          {type: 'number', min: 0, max: 99999999, message: '必须为数字值且大小要在1到99999999'},
+          { type: 'number', min: 0, max: 99999999, message: '必须为数字值且大小要在1到99999999' },
         ],
         minInventory: [
-          {type: 'number', min: 0, max: 99999999, message: '必须为数字值且大小要在1到99999999'},
+          { type: 'number', min: 0, max: 99999999, message: '必须为数字值且大小要在1到99999999' },
         ],
         manufacturer: [
-          {max: 40, message: "生产厂家最多40个字符", trigger: "blur"}
+          { max: 40, message: "生产厂家最多40个字符", trigger: "blur" }
         ],
         batchNo: [
-          {max: 20, message: "生产批号最多10个字符", trigger: "blur"}
+          { max: 20, message: "生产批号最多10个字符", trigger: "blur" }
         ],
         remark: [
-          {max: 100, message: "备注最多100个字符", trigger: "blur"}
+          { max: 100, message: "备注最多100个字符", trigger: "blur" }
         ],
       }
     };
@@ -358,7 +349,7 @@ export default {
     }
   },
   methods: {
-    tableRowClassName({row, rowIndex}) {
+    tableRowClassName({ row, rowIndex }) {
       if (row.minInventory) {
         if (row.totalInventory < row.minInventory) {
           return 'lower';
@@ -370,10 +361,6 @@ export default {
         }
       }
       return '';
-    },
-    handleTag(row) {
-      this.tagMaterial = row;
-      this.tagOpen = true;
     },
     handleTagCancel() {
       this.tagOpen = false;
@@ -595,7 +582,7 @@ export default {
       })
     },
     /** 仓库物料明细序号 */
-    rowWmsWarehouseMaterialDetailIndex({row, rowIndex}) {
+    rowWmsWarehouseMaterialDetailIndex({ row, rowIndex }) {
       row.index = rowIndex + 1;
     },
     /** 仓库物料明细添加按钮操作 */
@@ -624,7 +611,7 @@ export default {
     /** 仓库物料明细删除按钮操作 */
     handleDeleteWmsWarehouseMaterialDetail() {
       if (this.checkedWmsWarehouseMaterialDetail.length == 0) {
-        this.$alert("请先选择要删除的仓库物料明细数据", "提示", {confirmButtonText: "确定",});
+        this.$alert("请先选择要删除的仓库物料明细数据", "提示", { confirmButtonText: "确定", });
       } else {
         this.wmsWarehouseMaterialDetailList.splice(this.checkedWmsWarehouseMaterialDetail[0].index - 1, 1);
         //this.form.wmsWarehouseMaterialDetailList = this.wmsWarehouseMaterialDetailList;

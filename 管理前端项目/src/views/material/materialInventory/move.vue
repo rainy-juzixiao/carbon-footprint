@@ -1,112 +1,123 @@
 <template>
-  <el-dialog :title="title" :model-value="open" width="1500px" append-to-body @open="handleOpen" :close-on-click-modal="false" :show-close="false">
+  <el-dialog :title="title" :model-value="open" width="1500px" append-to-body @open="handleOpen"
+    :close-on-click-modal="false" :show-close="false">
     <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="80px">
       <el-form-item label="物料名称" prop="materialName">
-        <el-input v-model="form.materialName" placeholder="" disabled/>
+        <el-input v-model="form.materialName" placeholder="" disabled />
       </el-form-item>
       <el-form-item label="型号" prop="materialModel">
-        <el-input v-model="form.materialModel" placeholder="" disabled/>
+        <el-input v-model="form.materialModel" placeholder="" disabled />
       </el-form-item>
       <el-form-item label="规格" prop="materialSpecification">
-        <el-input v-model="form.materialSpecification" placeholder="" disabled/>
+        <el-input v-model="form.materialSpecification" placeholder="" disabled />
       </el-form-item>
       <el-form-item label="单位" prop="materialUnit">
-        <el-input v-model="form.materialUnit" placeholder="" disabled/>
+        <el-input v-model="form.materialUnit" placeholder="" disabled />
       </el-form-item>
-      <el-table :data="wmsWarehouseMaterialDetailList" :row-class-name="rowWmsWarehouseMaterialDetailIndex" ref="wmsWarehouseMaterialDetail">
-        <el-table-column label="序号" align="center" prop="index"  :fixed="true"  width="200" />
-        <el-table-column label="物料名" prop="materialName" :fixed="true" width="200" >
+      <el-table :data="wmsWarehouseMaterialDetailList" :row-class-name="rowWmsWarehouseMaterialDetailIndex"
+        ref="wmsWarehouseMaterialDetail">
+        <el-table-column label="序号" align="center" prop="index" width="200" />
+        <el-table-column label="物料名" prop="materialName" width="200">
         </el-table-column>
-        <el-table-column label="批号" prop="batchNo"  width="200" >
+        <el-table-column label="批号" prop="batchNo" width="200">
         </el-table-column>
-        <el-table-column label="源仓库" prop="warehouseName"  :fixed="true" width="200" >
+        <el-table-column label="源仓库" prop="warehouseName" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.warehouseName'">
-              {{scope.row.warehouseName}}
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.warehouseName'">
+              {{ scope.row.warehouseName }}
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="源库区" prop="whRegionName"  :fixed="true" width="200" >
+        <el-table-column label="源库区" prop="whRegionName" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.whRegionName'">
-              {{scope.row.whRegionName}}
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.whRegionName'">
+              {{ scope.row.whRegionName }}
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="源库位" prop="whLocationName"  :fixed="true" width="200" >
+        <el-table-column label="源库位" prop="whLocationName" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.whLocationName'">
-              {{scope.row.whLocationName}}
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.whLocationName'">
+              {{ scope.row.whLocationName }}
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="现有库存" prop="inventory"  :fixed="true" width="200" >
+        <el-table-column label="现有库存" prop="inventory" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.inventory'">
-              <el-input v-model.number="scope.row.inventory" placeholder="" disabled/>
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.inventory'">
+              <el-input v-model.number="scope.row.inventory" placeholder="" disabled />
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="锁定库存" prop="lockInventory"  :fixed="true" width="200" >
+        <el-table-column label="锁定库存" prop="lockInventory" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.lockInventory'">
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.lockInventory'">
               <el-input v-model.number="scope.row.lockInventory" placeholder="" disabled />
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="目标仓库" prop="targetWarehouseId"  width="200" >
+        <el-table-column label="目标仓库" prop="targetWarehouseId" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.targetWarehouseId'">
-              <el-select v-model="scope.row.targetWarehouseId" placeholder="请选择目标仓库" filterable @change="handleWarehouseChange(scope.row.targetWarehouseId,scope.$index)">
-                <el-option v-for="dict in warehouseIdOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="parseInt(dict.dictValue)"></el-option>
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.targetWarehouseId'">
+              <el-select v-model="scope.row.targetWarehouseId" placeholder="请选择目标仓库" filterable
+                @change="handleWarehouseChange(scope.row.targetWarehouseId, scope.$index)">
+                <el-option v-for="dict in warehouseIdOptions" :key="dict.dictValue" :label="dict.dictLabel"
+                  :value="parseInt(dict.dictValue)"></el-option>
               </el-select>
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="目标库区" prop="targetRegionId"  width="200" >
+        <el-table-column label="目标库区" prop="targetRegionId" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.targetRegionId'">
-              <el-select v-model="scope.row.targetRegionId" placeholder="请选择目标库区" filterable @change="handleWhRegionChange(scope.row.targetRegionId,scope.$index)">
-                <el-option v-for="dict in scope.row.targetWhRegionOptions" :key="dict.id" :label="dict.name" :value="dict.id" />
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.targetRegionId'">
+              <el-select v-model="scope.row.targetRegionId" placeholder="请选择目标库区" filterable
+                @change="handleWhRegionChange(scope.row.targetRegionId, scope.$index)">
+                <el-option v-for="dict in scope.row.targetWhRegionOptions" :key="dict.id" :label="dict.name"
+                  :value="dict.id" />
               </el-select>
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="目标库位" prop="targetLocationId"  width="200" >
+        <el-table-column label="目标库位" prop="targetLocationId" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.targetLocationId'">
-              <el-select v-model="scope.row.targetLocationId" placeholder="请选择目标库位" filterable @change="handleWhLocationChange">
-                <el-option v-for="dict in scope.row.targetWhLocationOptions" :key="dict.id" :label="dict.name" :value="dict.id" />
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.targetLocationId'">
+              <el-select v-model="scope.row.targetLocationId" placeholder="请选择目标库位" filterable
+                @change="handleWhLocationChange">
+                <el-option v-for="dict in scope.row.targetWhLocationOptions" :key="dict.id" :label="dict.name"
+                  :value="dict.id" />
               </el-select>
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="移出数量" prop="moveQuantity"  width="200" >
+        <el-table-column label="移出数量" prop="moveQuantity" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.moveQuantity'" :rules="rules.moveQuantity">
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.moveQuantity'"
+              :rules="rules.moveQuantity">
               <el-input v-model.number="scope.row.moveQuantity" placeholder="请输入移出数量" />
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="移出原因" prop="reason"  width="200" >
+        <el-table-column label="移出原因" prop="reason" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.reason'" :rules="rules.reason">
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.reason'" :rules="rules.reason">
               <el-input v-model.number="scope.row.reason" placeholder="请输入移出原因" />
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="备注" prop="remark"  width="200" >
+        <el-table-column label="备注" prop="remark" width="200">
           <template #default="scope">
-            <el-form-item :prop="'wmsWarehouseMaterialDetailList.'+scope.$index+'.remark'" :rules="rules.remark">
+            <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.remark'" :rules="rules.remark">
               <el-input v-model="scope.row.remark" placeholder="请输入备注" />
             </el-form-item>
           </template>
         </el-table-column>
       </el-table>
     </el-form>
-    <template slot="footer" class="dialog-footer">
-      <el-button  type="primary" @click="submitForm">确 定</el-button>
-      <el-button  @click="cancel">取 消</el-button>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
     </template>
   </el-dialog>
 </template>
@@ -117,9 +128,7 @@ import { listWarehouseRegion } from "@/api/warehouse/warehouseRegion";
 import { listWarehouseLocation } from "@/api/warehouse/warehouseLocation";
 export default {
   name: "MaterialInventory",
-  components: {
-
-  },
+  components: {},
   props: {
     // 是否显示弹出层
     open: {
@@ -143,7 +152,7 @@ export default {
       // 表单校验
       rules: {
         moveQuantity: [
-          { type: 'number',min: 1, max: 65535, message: '移出数量必须为数字值且大小要在1到65535' },
+          { type: 'number', min: 1, max: 65535, message: '移出数量必须为数字值且大小要在1到65535' },
         ]
       }
     };

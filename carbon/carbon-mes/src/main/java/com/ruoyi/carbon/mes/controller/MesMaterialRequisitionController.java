@@ -9,6 +9,8 @@ import com.ruoyi.carbon.mes.domain.MesProductSchedule;
 import com.ruoyi.carbon.mes.service.IMesMaterialRequisitionService;
 import com.ruoyi.carbon.mes.service.IMesProductPlanService;
 import com.ruoyi.carbon.mes.service.IMesProductScheduleService;
+import com.ruoyi.carbon.wms.domain.WmsMaterialInfo;
+import com.ruoyi.carbon.wms.service.IWmsMaterialInfoService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
@@ -44,6 +46,8 @@ public class MesMaterialRequisitionController extends BaseController {
     private IMesProductScheduleService mesProductScheduleService;
     @Autowired
     private IMesProductPlanService mesProductPlanService;
+    @Autowired
+    private IWmsMaterialInfoService wmsMaterialInfoService;
 
     /**
      * 查询领料申请列表
@@ -74,7 +78,14 @@ public class MesMaterialRequisitionController extends BaseController {
                 apply.setScheduleNo(schedule.getSerialNo());
             }
             //获取产品信息
-
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(apply.getProductId());
+            if (materialInfo != null) {
+                apply.setMaterialCode(materialInfo.getCode());
+                apply.setMaterialModel(materialInfo.getModel());
+                apply.setMaterialName(materialInfo.getName());
+                apply.setMaterialUnit(materialInfo.getUnit());
+                apply.setMaterialSpecification(materialInfo.getSpecification());
+            }
         });
         return getDataTable(list);
     }
@@ -112,7 +123,14 @@ public class MesMaterialRequisitionController extends BaseController {
                 apply.setScheduleNo(schedule.getSerialNo());
             }
             //获取产品信息
-
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(apply.getProductId());
+            if (materialInfo != null) {
+                apply.setMaterialCode(materialInfo.getCode());
+                apply.setMaterialModel(materialInfo.getModel());
+                apply.setMaterialName(materialInfo.getName());
+                apply.setMaterialUnit(materialInfo.getUnit());
+                apply.setMaterialSpecification(materialInfo.getSpecification());
+            }
         });
         return getDataTable(list);
     }
@@ -145,7 +163,14 @@ public class MesMaterialRequisitionController extends BaseController {
                 apply.setScheduleNo(schedule.getSerialNo());
             }
             //获取产品信息
-
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(apply.getProductId());
+            if (materialInfo != null) {
+                apply.setMaterialCode(materialInfo.getCode());
+                apply.setMaterialModel(materialInfo.getModel());
+                apply.setMaterialName(materialInfo.getName());
+                apply.setMaterialUnit(materialInfo.getUnit());
+                apply.setMaterialSpecification(materialInfo.getSpecification());
+            }
         });
         ExcelUtil<MesMaterialRequisition> util = new ExcelUtil<MesMaterialRequisition>(MesMaterialRequisition.class);
         return util.exportExcel(list, "requisitionApply");
@@ -164,7 +189,14 @@ public class MesMaterialRequisitionController extends BaseController {
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         MesMaterialRequisition apply = mesMaterialRequisitionService.selectMesMaterialRequisitionById(id);
         //获取产品信息
-
+        WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(apply.getProductId());
+        if (materialInfo != null) {
+            apply.setMaterialCode(materialInfo.getCode());
+            apply.setMaterialModel(materialInfo.getModel());
+            apply.setMaterialName(materialInfo.getName());
+            apply.setMaterialUnit(materialInfo.getUnit());
+            apply.setMaterialSpecification(materialInfo.getSpecification());
+        }
         //获取排产信息
         MesProductPlan plan = mesProductPlanService.selectMesProductPlanById(apply.getPlanId());
         if (plan != null) {
@@ -177,7 +209,16 @@ public class MesMaterialRequisitionController extends BaseController {
         }
         //获取物料信息
         List<MesMaterialRequisitionDetail> detailList = apply.getMesMaterialRequisitionDetailList();
-
+        detailList.forEach(detail -> {
+            WmsMaterialInfo materialInfo1 = wmsMaterialInfoService.selectWmsMaterialInfoById(detail.getMaterialId());
+            if (materialInfo1 != null) {
+                detail.setMaterialCode(materialInfo1.getCode());
+                detail.setMaterialModel(materialInfo1.getModel());
+                detail.setMaterialName(materialInfo1.getName());
+                detail.setMaterialUnit(materialInfo1.getUnit());
+                detail.setMaterialSpecification(materialInfo1.getSpecification());
+            }
+        });
         return AjaxResult.success(apply);
     }
 

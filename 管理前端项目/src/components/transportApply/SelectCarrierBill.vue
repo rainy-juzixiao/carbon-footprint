@@ -1,23 +1,22 @@
 <template>
   <el-dialog :title="title" :model-value="open" width="1000px" append-to-body @open="handleOpen"
-             :close-on-click-modal="false" :show-close="false">
+    :close-on-click-modal="false" :show-close="false">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="单据号" prop="serialNo">
-        <el-input v-model="queryParams.serialNo" placeholder="请输入单据号" clearable
-                  @keyup.enter.native="handleQuery"/>
+        <el-input v-model="queryParams.serialNo" placeholder="请输入单据号" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="出库单号" prop="outWarehouseNo">
         <el-input v-model="queryParams.outWarehouseNo" placeholder="请输入出库单号" clearable
-                  @keyup.enter.native="handleQuery"/>
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="发货单号" prop="saleDeliveryNo">
         <el-input v-model="queryParams.saleDeliveryNo" placeholder="请输入发货单号" clearable
-                  @keyup.enter.native="handleQuery"/>
+          @keyup.enter.native="handleQuery" />
       </el-form-item>
       <el-form-item label="客户" prop="customerId">
-        <el-select v-model="queryParams.customerId" placeholder="请选择客户" clearable filterable >
+        <el-select v-model="queryParams.customerId" placeholder="请选择客户" clearable filterable>
           <el-option v-for="dict in customerIdOptions" :key="dict.dictValue" :label="dict.dictLabel"
-                     :value="dict.dictValue"/>
+            :value="dict.dictValue" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -34,21 +33,21 @@
     </el-row>
 
     <el-table v-loading="loading" :data="carrierApplyList" width="auto">
-      <el-table-column label="编号" align="center" prop="id"/>
-      <el-table-column label="单据号" align="center" prop="serialNo"/>
-      <el-table-column label="出库单号" align="center" prop="outWarehouseNo" >
+      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="单据号" align="center" prop="serialNo" />
+      <el-table-column label="出库单号" align="center" prop="outWarehouseNo">
       </el-table-column>
       <el-table-column label="发货单号" align="center" prop="saleDeliveryNo" />
-      <el-table-column label="客户" align="center" prop="customerId" :formatter="customerIdFormat"/>
-      <el-table-column label="收货地址" align="center" prop="shippingAddress"/>
-      <el-table-column label="联系人" align="center" prop="contact"/>
-      <el-table-column label="联系电话" align="center" prop="contactTel"/>
+      <el-table-column label="客户" align="center" prop="customerId" :formatter="customerIdFormat" />
+      <el-table-column label="收货地址" align="center" prop="shippingAddress" />
+      <el-table-column label="联系人" align="center" prop="contact" />
+      <el-table-column label="联系电话" align="center" prop="contactTel" />
       <el-table-column label="交货日期" align="center" prop="deliveryDate" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.deliveryDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="承运人" align="center" prop="carrierUser" :formatter="carrierUserFormat"/>
+      <el-table-column label="承运人" align="center" prop="carrierUser" :formatter="carrierUserFormat" />
       <el-table-column label="运输距离" align="center" prop="distance">
         <template #default="scope">
           <span>{{ scope.row.distance }}公里</span>
@@ -62,49 +61,44 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0"
-                :total="total"
-                v-model:page="queryParams.pageNum"
-                v-model:limit="queryParams.pageSize"
-                @pagination="getList"/>
+    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
+      @pagination="getList" />
 
     <!-- 添加或修改承运申请对话框 -->
     <el-dialog :title="title" v-model="detailOpen" width="1000px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="90px" :inline="true">
         <el-form-item label="单据号" prop="serialNo">
-          <el-input v-model="form.serialNo" placeholder="" disabled/>
+          <el-input v-model="form.serialNo" placeholder="" disabled />
         </el-form-item>
         <el-form-item label="出库单号" prop="outWarehouseNo">
           <el-input v-model="form.outWarehouseNo" placeholder="" disabled>
           </el-input>
         </el-form-item>
         <el-form-item label="发货单号" prop="saleDeliveryNo">
-          <el-input v-model="form.saleDeliveryNo" placeholder="" disabled/>
+          <el-input v-model="form.saleDeliveryNo" placeholder="" disabled />
         </el-form-item>
         <el-form-item label="客户" prop="customerId">
           <el-select v-model="form.customerId" placeholder="" clearable filterable disabled>
             <el-option v-for="dict in customerIdOptions" :key="dict.dictValue" :label="dict.dictLabel"
-                       :value="parseInt(dict.dictValue)"></el-option>
+              :value="parseInt(dict.dictValue)"></el-option>
           </el-select>
         </el-form-item>
-        <el-table-column label="交货日期" align="center" prop="deliveryDate" width="180">
-          <template #default="scope">
-            <span>{{ parseTime(scope.row.deliveryDate, '{y}-{m}-{d}') }}</span>
-          </template>
-        </el-table-column>
+        <el-form-item label="交货日期" align="center" prop="deliveryDate" width="180">
+          <span>{{ parseTime(form.deliveryDate, '{y}-{m}-{d}') }}</span>
+        </el-form-item>
         <el-form-item label="收货地址" prop="shippingAddress">
-          <el-input v-model="form.shippingAddress" placeholder="" disabled/>
+          <el-input v-model="form.shippingAddress" placeholder="" disabled />
         </el-form-item>
         <el-form-item label="联系人" prop="contact">
-          <el-input v-model="form.contact" placeholder="" disabled/>
+          <el-input v-model="form.contact" placeholder="" disabled />
         </el-form-item>
         <el-form-item label="联系电话" prop="contactTel">
-          <el-input v-model="form.contactTel" placeholder="" disabled/>
+          <el-input v-model="form.contactTel" placeholder="" disabled />
         </el-form-item>
         <el-form-item label="承运人" prop="carrierUser">
           <el-select v-model="form.carrierUser" placeholder="" clearable filterable disabled>
             <el-option v-for="dict in carrierUserOptions" :key="dict.dictValue" :label="dict.dictLabel"
-                       :value="dict.dictValue"></el-option>
+              :value="dict.dictValue"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="运输距离" prop="distance">
@@ -115,63 +109,63 @@
           </el-input>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="" disabled/>
+          <el-input v-model="form.remark" type="textarea" placeholder="" disabled />
         </el-form-item>
         <el-divider content-position="center">产品承运单明细信息</el-divider>
         <el-table :data="wmsCarrierApplyDetailList" :row-class-name="rowWmsCarrierApplyDetailIndex"
-                  ref="wmsCarrierApplyDetail">
-          <el-table-column label="序号" align="center" prop="index" width="50"/>
-          <el-table-column label="物料" prop="materialName" >
+          ref="wmsCarrierApplyDetail">
+          <el-table-column label="序号" align="center" prop="index" width="50" />
+          <el-table-column label="物料" prop="materialName">
             <template #default="scope">
-              <el-form-item :prop="'wmsCarrierApplyDetailList.'+scope.$index+'.materialName'"
-                            :rules="rules.materialName">
-                <el-input v-model="scope.row.materialName" placeholder="" disabled/>
+              <el-form-item :prop="'wmsCarrierApplyDetailList.' + scope.$index + '.materialName'"
+                :rules="rules.materialName">
+                <el-input v-model="scope.row.materialName" placeholder="" disabled />
               </el-form-item>
             </template>
           </el-table-column>
-          <el-table-column label="生产批号" prop="batchNo" >
+          <el-table-column label="生产批号" prop="batchNo">
             <template #default="scope">
-              <el-form-item :prop="'wmsCarrierApplyDetailList.'+scope.$index+'.batchNo'" :rules="rules.batchNo">
-                <el-input v-model="scope.row.batchNo" placeholder="" disabled/>
+              <el-form-item :prop="'wmsCarrierApplyDetailList.' + scope.$index + '.batchNo'" :rules="rules.batchNo">
+                <el-input v-model="scope.row.batchNo" placeholder="" disabled />
               </el-form-item>
             </template>
           </el-table-column>
-          <el-table-column label="仓库" prop="warehouseId" >
+          <el-table-column label="仓库" prop="warehouseId">
             <template #default="scope">
-              <el-form-item :prop="'wmsCarrierApplyDetailList.'+scope.$index+'.warehouseId'" :rules="rules.warehouseId">
+              <el-form-item :prop="'wmsCarrierApplyDetailList.' + scope.$index + '.warehouseId'" :rules="rules.warehouseId">
                 <el-select v-model="scope.row.warehouseId" placeholder="" disabled>
                   <el-option v-for="dict in warehouseIdOptions" :key="dict.dictValue" :label="dict.dictLabel"
-                             :value="dict.dictValue"></el-option>
+                    :value="dict.dictValue"></el-option>
                 </el-select>
               </el-form-item>
             </template>
           </el-table-column>
-          <el-table-column label="库区" prop="whRegionId" >
+          <el-table-column label="库区" prop="whRegionId">
             <template #default="scope">
-              <el-form-item :prop="'wmsCarrierApplyDetailList.'+scope.$index+'.whRegionId'" :rules="rules.whRegionId">
+              <el-form-item :prop="'wmsCarrierApplyDetailList.' + scope.$index + '.whRegionId'" :rules="rules.whRegionId">
                 <el-select v-model="scope.row.whRegionId" placeholder="" disabled>
                   <el-option v-for="dict in scope.row.whRegionOptions" :key="dict.id" :label="dict.name"
-                             :value="dict.id"/>
+                    :value="dict.id" />
                 </el-select>
               </el-form-item>
             </template>
           </el-table-column>
-          <el-table-column label="库位" prop="whLocationId" >
+          <el-table-column label="库位" prop="whLocationId">
             <template #default="scope">
-              <el-form-item :prop="'wmsCarrierApplyDetailList.'+scope.$index+'.whLocationId'"
-                            :rules="rules.whLocationId">
+              <el-form-item :prop="'wmsCarrierApplyDetailList.' + scope.$index + '.whLocationId'"
+                :rules="rules.whLocationId">
                 <el-select v-model="scope.row.whLocationId" placeholder="">
                   <el-option v-for="dict in scope.row.whLocationOptions" :key="dict.id" :label="dict.name"
-                             :value="dict.id"/>
+                    :value="dict.id" />
                 </el-select>
               </el-form-item>
             </template>
           </el-table-column>
-          <el-table-column label="发货数量" prop="deliveryQuantity" >
+          <el-table-column label="发货数量" prop="deliveryQuantity">
             <template #default="scope">
-              <el-form-item :prop="'wmsCarrierApplyDetailList.'+scope.$index+'.deliveryQuantity'"
-                            :rules="rules.deliveryQuantity">
-                <el-input v-model="scope.row.deliveryQuantity" placeholder="" disabled/>
+              <el-form-item :prop="'wmsCarrierApplyDetailList.' + scope.$index + '.deliveryQuantity'"
+                :rules="rules.deliveryQuantity">
+                <el-input v-model="scope.row.deliveryQuantity" placeholder="" disabled />
               </el-form-item>
             </template>
           </el-table-column>
@@ -181,22 +175,21 @@
         <el-button @click="cancel">取 消</el-button>
       </template>
     </el-dialog>
-    <out-warehouse-detail :open="outBillOpen" :billId="outBillId" @onCancel="handleCancelOutWh"></out-warehouse-detail>
   </el-dialog>
 </template>
 
 <script>
-import {getCarrierApply, listCarrierApply} from "@/api/transportApply/carrierApply";
-import {listWarehouseRegion} from "@/api/warehouse/warehouseRegion";
-import {listWarehouseLocation} from "@/api/warehouse/warehouseLocation";
+import { getCarrierApply, listCarrierApply } from "@/api/transportApply/carrierApply";
+import { listWarehouseRegion } from "@/api/warehouse/warehouseRegion";
+import { listWarehouseLocation } from "@/api/warehouse/warehouseLocation";
 import OutWarehouseDetail from '@/views/wmsApply/components/OutWarehouseDetail.vue';
 
 export default {
   name: "CarrierBillSelect",
   components:
-      {
-        OutWarehouseDetail
-      },
+  {
+    OutWarehouseDetail
+  },
   props: {
     // 是否显示弹出层
     open: {
@@ -420,14 +413,13 @@ export default {
         this.wmsCarrierApplyDetailList.forEach((item, index) => {
           this.getWhRegionOpts(item.warehouseId, index);
           this.getWhLocationOpts(item.whRegionId, index);
-        })
+        });
         this.title = "查看承运申请";
-        console.log('form', this.form)
         this.detailOpen = true;
       });
     },
     /** 产品承运申请明细序号 */
-    rowWmsCarrierApplyDetailIndex({row, rowIndex}) {
+    rowWmsCarrierApplyDetailIndex({ row, rowIndex }) {
       row.index = rowIndex + 1;
     },
   }

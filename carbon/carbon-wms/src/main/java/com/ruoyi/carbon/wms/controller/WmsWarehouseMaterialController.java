@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 仓库物料信息Controller
@@ -36,6 +37,8 @@ public class WmsWarehouseMaterialController extends BaseController {
     private IWmsWarehouseRegionService whRegionService;
     @Autowired
     private IWmsWarehouseLocationService whLocationService;
+    @Autowired
+    private IWmsMaterialInfoService wmsMaterialInfoService;
 
     /**
      * 查询仓库物料信息列表
@@ -52,7 +55,17 @@ public class WmsWarehouseMaterialController extends BaseController {
     public TableDataInfo list(WmsWarehouseMaterial wmsWarehouseMaterial) {
         startPage();
         List<WmsWarehouseMaterial> list = wmsWarehouseMaterialService.selectWmsWarehouseMaterialList(wmsWarehouseMaterial);
-
+        list.forEach(warehouseMaterial -> {
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(warehouseMaterial.getMaterialId());
+            if (materialInfo != null) {
+                warehouseMaterial.setMaterialName(materialInfo.getName());
+                warehouseMaterial.setMaterialCode(materialInfo.getCode());
+                warehouseMaterial.setMaterialModel(materialInfo.getModel());
+                warehouseMaterial.setMaterialPrice(materialInfo.getPrice());
+                warehouseMaterial.setMaterialSpecification(materialInfo.getSpecification());
+                warehouseMaterial.setMaterialUnit(materialInfo.getUnit());
+            }
+        });
         return getDataTable(list);
     }
 
@@ -86,12 +99,27 @@ public class WmsWarehouseMaterialController extends BaseController {
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         WmsWarehouseMaterial wmsWarehouseMaterial = wmsWarehouseMaterialService.selectWmsWarehouseMaterialById(id);
-
+        WmsMaterialInfo material = wmsMaterialInfoService.selectWmsMaterialInfoById(wmsWarehouseMaterial.getMaterialId());
+        if (material != null) {
+            wmsWarehouseMaterial.setMaterialName(material.getName());
+            wmsWarehouseMaterial.setMaterialCode(material.getCode());
+            wmsWarehouseMaterial.setMaterialModel(material.getModel());
+            wmsWarehouseMaterial.setMaterialPrice(material.getPrice());
+            wmsWarehouseMaterial.setMaterialSpecification(material.getSpecification());
+            wmsWarehouseMaterial.setMaterialUnit(material.getUnit());
+        }
         List<WmsWarehouseMaterialDetail> detailList = wmsWarehouseMaterial.getWmsWarehouseMaterialDetailList();
         if (detailList != null && !detailList.isEmpty()) {
-            detailList.stream().forEach(detail -> {
+            detailList.forEach(detail -> {
                 //设置物料信息
-
+                WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(detail.getMaterialId());
+                if (materialInfo != null) {
+                    detail.setMaterialName(materialInfo.getName());
+                    detail.setMaterialCode(materialInfo.getCode());
+                    detail.setMaterialModel(materialInfo.getModel());
+                    detail.setMaterialSpecification(materialInfo.getSpecification());
+                    detail.setMaterialUnit(materialInfo.getUnit());
+                }
                 //设置仓库信息
                 WmsWarehouse wh = warehouseService.selectWmsWarehouseById(detail.getWhId());
                 if (wh != null) {

@@ -326,7 +326,8 @@
             </el-form>
             <template #footer>
                 <div class="dialog-footer">
-                    <el-button type="primary" @click="submitForm" :disabled="isUnsubmitted">确 定</el-button>
+                    <el-button type="primary" @click="submitForm(false)">保 存</el-button>
+                    <el-button type="warning" @click="submitForm(true)">提 交</el-button>
                     <el-button @click="cancel">取 消</el-button>
                 </div>
             </template>
@@ -344,7 +345,7 @@
 </template>
 
 <script setup name="InWarahouseApply">
-import { listInWarahouseApply, getInWarahouseApply, delInWarahouseApply, addInWarahouseApply, updateInWarahouseApply, inWarehouse } from "@/api/wmsApply/inWarahouseApply";
+import { listInWarahouseApply, getInWarahouseApply, delInWarahouseApply, addInWarahouseApply, updateInWarahouseApply, inWarehouse, submitInWarahouseApply } from "@/api/wmsApply/inWarahouseApply";
 import { listWarehouseRegion } from "@/api/warehouse/warehouseRegion";
 import { listWarehouseLocation } from "@/api/warehouse/warehouseLocation";
 import ProductFinishSelect from "@/components/product/ProductFinishSelect";
@@ -647,18 +648,24 @@ function handleUpdate(row) {
     });
 }
 
-function submitForm() {
+function submitForm(isSubmit) {
     proxy.$refs["inWarahouseApplyRef"].validate(valid => {
         if (valid) {
             form.value.wmsInWarehouseApplyDetailList = wmsInWarehouseApplyDetailList.value;
-            if (form.value.id != null) {
-                updateInWarahouseApply(form.value).then(response => {
+            if (isSubmit) {
+                submitInWarahouseApply(form.value).then(() => {
+                    proxy.$modal.msgSuccess("提交成功");
+                    open.value = false;
+                    getList();
+                });
+            } else if (form.value.id != null) {
+                updateInWarahouseApply(form.value).then(() => {
                     proxy.$modal.msgSuccess("修改成功");
                     open.value = false;
                     getList();
                 });
             } else {
-                addInWarahouseApply(form.value).then(response => {
+                addInWarahouseApply(form.value).then(() => {
                     proxy.$modal.msgSuccess("新增成功");
                     open.value = false;
                     getList();

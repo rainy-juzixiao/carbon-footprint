@@ -6,6 +6,8 @@ import com.ruoyi.carbon.scm.domain.*;
 import com.ruoyi.carbon.scm.service.IScmSaleContractService;
 import com.ruoyi.carbon.scm.service.IScmSaleDeliveryService;
 import com.ruoyi.carbon.scm.service.IScmSaleReturnService;
+import com.ruoyi.carbon.wms.domain.WmsMaterialInfo;
+import com.ruoyi.carbon.wms.service.IWmsMaterialInfoService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -38,6 +40,8 @@ public class ScmSaleReturnController extends BaseController {
     private IScmSaleContractService scmSaleContractService;
     @Autowired
     private IScmSaleDeliveryService scmSaleDeliveryService;
+    @Autowired
+    private IWmsMaterialInfoService wmsMaterialInfoService;
 
     /**
      * 查询销售退货列表
@@ -92,6 +96,17 @@ public class ScmSaleReturnController extends BaseController {
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         ScmSaleReturn scmSaleReturn = scmSaleReturnService.selectScmSaleReturnById(id);
         List<ScmSaleReturnDetail> detailList = scmSaleReturn.getScmSaleReturnDetailList();
+        detailList.forEach(detail -> {
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(detail.getMaterialId());
+            if (materialInfo != null) {
+                detail.setMaterialName(materialInfo.getName());
+                detail.setMaterialCode(materialInfo.getCode());
+                detail.setMaterialSpecification(materialInfo.getSpecification());
+                detail.setMaterialModel(materialInfo.getModel());
+                detail.setMaterialUnit(materialInfo.getUnit());
+                detail.setMaterialPrice(materialInfo.getPrice());
+            }
+        });
         return AjaxResult.success(scmSaleReturn);
     }
 

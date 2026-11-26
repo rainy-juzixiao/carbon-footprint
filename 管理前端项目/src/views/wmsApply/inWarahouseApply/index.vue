@@ -125,11 +125,11 @@
                     <el-button v-if="scope.row.auditStatus == '1' && scope.row.billStatus != '1'" type="text"
                         icon="el-icon-caret-right" @click="handleInWarehouse(scope.row)"
                         v-hasPermi="['wmsApply:inWarahouseApply:edit']">入库</el-button>
-                   
+
                     <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)"
                         v-hasPermi="['wmsApply:inWarahouseApply:edit']">修改
                     </el-button>
-                   
+
                     <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"
                         v-if="scope.row.auditStatus != '1' && scope.row.applyStatus != '1'"
                         v-hasPermi="['wmsApply:inWarahouseApply:remove']">删除
@@ -142,7 +142,7 @@
             v-model:limit="queryParams.pageSize" @pagination="getList" />
 
         <!-- 添加或修改入库申请对话框 -->
-         <!-- 申请状态为“未提交”时不可修改任何数据 -->
+        <!-- 申请状态为“未提交”时不可修改任何数据 -->
         <el-dialog :title="title" v-model="open" width="1000px" append-to-body>
             <el-form ref="inWarahouseApplyRef" :model="form" :rules="rules" label-width="92px">
                 <el-form-item label="申请单号" prop="serialNo">
@@ -151,7 +151,8 @@
                 <el-form-item label="关联单据号" prop="bizBillId">
                     <el-input v-model="form.bizBillNo" placeholder="请选择关联单据号" disabled>
                         <template #append>
-                            <el-button v-no-more-click @click="selectBizBillNoOpen()" :disabled="isUnsubmitted">选择</el-button>
+                            <el-button v-no-more-click @click="selectBizBillNoOpen()"
+                                :disabled="isUnsubmitted">选择</el-button>
                         </template>
                     </el-input>
                 </el-form-item>
@@ -246,7 +247,8 @@
                     </el-table-column>
                     <el-table-column label="仓库" prop="warehouseId" width="180">
                         <template #default="scope">
-                            <el-select v-model="scope.row.warehouseId" placeholder="请选择仓库" clearable :disabled="isUnsubmitted">
+                            <el-select v-model="scope.row.warehouseId" placeholder="请选择仓库" clearable
+                                :disabled="isUnsubmitted">
                                 <el-option v-for="item in warehouseIdQuery" :key="item.dictValue"
                                     :label="item.dictLabel" :value="parseInt(item.dictValue)" />
                             </el-select>
@@ -256,7 +258,8 @@
                         <template #default="scope">
                             <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.whRegionId'"
                                 :rules="rules.whRegionId">
-                                <el-select v-model="scope.row.whRegionId" placeholder="请选择库区" filterable :disabled="isUnsubmitted"
+                                <el-select v-model="scope.row.whRegionId" placeholder="请选择库区" filterable
+                                    :disabled="isUnsubmitted"
                                     @change="handleWhRegionChange(scope.row.whRegionId, scope.$index)">
                                     <el-option v-for="dict in scope.row.whRegionOptions" :key="dict.id"
                                         :label="dict.name" :value="dict.id" />
@@ -268,7 +271,8 @@
                         <template #default="scope">
                             <el-form-item :prop="'wmsWarehouseMaterialDetailList.' + scope.$index + '.whLocationId'"
                                 :rules="rules.whLocationId">
-                                <el-select v-model="scope.row.whLocationId" placeholder="请选择库位" filterable :disabled="isUnsubmitted">
+                                <el-select v-model="scope.row.whLocationId" placeholder="请选择库位" filterable
+                                    :disabled="isUnsubmitted">
                                     <el-option v-for="dict in scope.row.whLocationOptions" :key="dict.id"
                                         :label="dict.name" :value="dict.id" />
                                 </el-select>
@@ -292,7 +296,8 @@
                     </el-table-column>
                     <el-table-column label="到货数量" prop="totalQuantity" width="150">
                         <template #default="scope">
-                            <el-input v-model="scope.row.totalQuantity" placeholder="请输入到货数量" :disabled="isUnsubmitted" />
+                            <el-input v-model="scope.row.totalQuantity" placeholder="请输入到货数量"
+                                :disabled="isUnsubmitted" />
                         </template>
                     </el-table-column>
                     <el-table-column label="入库数量" prop="inQuantity" width="150">
@@ -313,7 +318,8 @@
                     </el-table-column>
                     <el-table-column label="生产单位" prop="manufacturer" width="150">
                         <template #default="scope">
-                            <el-input v-model="scope.row.manufacturer" placeholder="请输入生产单位" :disabled="isUnsubmitted" />
+                            <el-input v-model="scope.row.manufacturer" placeholder="请输入生产单位"
+                                :disabled="isUnsubmitted" />
                         </template>
                     </el-table-column>
                 </el-table>
@@ -423,8 +429,10 @@ const selectBizBillNoOpen = () => {
 const handleProductFinishSelectSelected = (row) => { // 生成完工单自带了物料信息，直接加入到详细
     let bill = row;
     let f = form.value;
+    // 设置基础信息
     f.bizBillId = bill.id;
     f.bizBillNo = bill.serialNo;
+    // 添加物料档案
     let list = [];
     list.push({
         materialId: bill.materialId,
@@ -486,10 +494,12 @@ const handleArriveSelectSelected = (row) => {
 const handleSaleReturnSelectd = (row) => {
     let returnd = row[0];
     let f = form.value;
+    // 设置基础信息
     f.contractId = returnd.contractId;
     f.contractNo = returnd.contractNo;
     f.bizBillId = returnd.id;
     f.bizBillNo = returnd.returnNo;
+    // 添加物料档案
     getReturn(f.bizBillId).then(response => {
         let detailList = response.data.scmPurchaseArriveDetailList
         let list = [];
@@ -672,34 +682,6 @@ function handleDelete(row) {
 /** 入库申请明细序号 */
 function rowWmsInWarehouseApplyDetailIndex({ row, rowIndex }) {
     row.index = rowIndex + 1;
-}
-
-/** 入库申请明细添加按钮操作 */
-function handleAddWmsInWarehouseApplyDetail() {
-    let obj = {};
-    obj.materialId = "";
-    obj.warehouseId = "";
-    obj.whLocationId = "";
-    obj.whRegionId = "";
-    obj.totalQuantity = "";
-    obj.inQuantity = "";
-    obj.batchNo = "";
-    obj.productDate = "";
-    obj.manufacturer = "";
-    wmsInWarehouseApplyDetailList.value.push(obj);
-}
-
-/** 入库申请明细删除按钮操作 */
-function handleDeleteWmsInWarehouseApplyDetail() {
-    if (checkedWmsInWarehouseApplyDetail.value.length == 0) {
-        proxy.$modal.msgError("请先选择要删除的入库申请明细数据");
-    } else {
-        const wmsInWarehouseApplyDetails = wmsInWarehouseApplyDetailList.value;
-        const checkedWmsInWarehouseApplyDetails = checkedWmsInWarehouseApplyDetail.value;
-        wmsInWarehouseApplyDetailList.value = wmsInWarehouseApplyDetails.filter(function (item) {
-            return checkedWmsInWarehouseApplyDetails.indexOf(item.index) == -1
-        });
-    }
 }
 
 /** 复选框选中数据 */

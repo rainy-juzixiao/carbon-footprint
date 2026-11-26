@@ -41,6 +41,8 @@ public class WmsWarehouseMaterialMoveController extends BaseController {
     private IWmsWarehouseRegionService wmsWarehouseRegionService;
     @Autowired
     private IWmsWarehouseService wmsWarehouseService;
+    @Autowired
+    private IWmsMaterialInfoService wmsMaterialInfoService;
 
     /**
      * 查询移库信息列表
@@ -56,7 +58,8 @@ public class WmsWarehouseMaterialMoveController extends BaseController {
         startPage();
         List<WmsWarehouseMaterialMove> list = wmsWarehouseMaterialMoveService
                 .selectWmsWarehouseMaterialMoveList(wmsWarehouseMaterialMove);
-        list.stream().forEach(move -> {
+        list.forEach(move -> {
+            // 获取仓库信息
             WmsWarehouse targetWh = wmsWarehouseService.selectWmsWarehouseById(move.getTargetWarehouseId());
             if (targetWh != null) {
                 move.setTargetWarehouseName(targetWh.getName());
@@ -84,6 +87,11 @@ public class WmsWarehouseMaterialMoveController extends BaseController {
                     .selectWmsWarehouseRegionById(move.getSourceRegionId());
             if (sourceRegion != null) {
                 move.setSourceRegionName(sourceRegion.getName());
+            }
+            // 获取物料信息
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(move.getMaterialId());
+            if (materialInfo != null) {
+                move.setMaterialName(materialInfo.getName());
             }
         });
         return getDataTable(list);

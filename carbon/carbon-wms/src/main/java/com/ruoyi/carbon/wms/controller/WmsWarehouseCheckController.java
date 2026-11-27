@@ -38,6 +38,8 @@ public class WmsWarehouseCheckController extends BaseController {
     private IWmsWarehouseService wmsWarehouseService;
     @Autowired
     private IWmsWarehouseMaterialDetailService wmsWarehouseMaterialDetailService;
+    @Autowired
+    private IWmsMaterialInfoService wmsMaterialInfoService;
 
     /**
      * 查询盘点信息列表
@@ -65,6 +67,10 @@ public class WmsWarehouseCheckController extends BaseController {
             WmsWarehouseRegion region = wmsWarehouseRegionService.selectWmsWarehouseRegionById(check.getWhRegionId());
             if (region != null) {
                 check.setWhRegionName(region.getName());
+            }
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(check.getMaterialId());
+            if (materialInfo != null) {
+                check.setMaterialName(materialInfo.getName());
             }
         });
         return getDataTable(list);
@@ -111,6 +117,12 @@ public class WmsWarehouseCheckController extends BaseController {
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         WmsWarehouseCheck check = wmsWarehouseCheckService.selectWmsWarehouseCheckById(id);
+
+        WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(check.getMaterialId());
+        if (materialInfo != null){
+            check.setMaterialName(materialInfo.getName());
+        }
+
         return AjaxResult.success(check);
     }
 

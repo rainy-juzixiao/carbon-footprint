@@ -145,17 +145,19 @@
         <!-- 申请状态为“未提交”时不可修改任何数据 -->
         <el-dialog :title="title" v-model="open" width="1000px" append-to-body>
             <el-form ref="inWarahouseApplyRef" :model="form" :rules="rules" label-width="92px">
-                <el-form-item label="申请单号" prop="serialNo">
-                    <el-input v-model="form.serialNo" placeholder="请输入申请单号" :disabled="isUnsubmitted" />
-                </el-form-item>
-                <el-form-item label="关联单据号" prop="bizBillId">
-                    <el-input v-model="form.bizBillNo" placeholder="请选择关联单据号" disabled>
-                        <template #append>
-                            <el-button v-no-more-click @click="selectBizBillNoOpen()"
-                                :disabled="isUnsubmitted">选择</el-button>
-                        </template>
-                    </el-input>
-                </el-form-item>
+                <el-row>
+                    <el-form-item label="申请单号" prop="serialNo">
+                        <el-input v-model="form.serialNo" placeholder="系统自动生成" disabled />
+                    </el-form-item>
+                    <el-form-item label="关联单据号" prop="bizBillId">
+                        <el-input v-model="form.bizBillNo" placeholder="请选择关联单据号" disabled>
+                            <template #append>
+                                <el-button v-no-more-click @click="selectBizBillNoOpen()"
+                                    :disabled="isUnsubmitted">选择</el-button>
+                            </template>
+                        </el-input>
+                    </el-form-item>
+                </el-row>
                 <el-row>
                     <el-form-item label="业务类型" prop="bizType">
                         <el-select v-model="form.bizType" placeholder="请选择业务类型" :disabled="isUnsubmitted">

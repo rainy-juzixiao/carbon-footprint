@@ -139,16 +139,18 @@
     <!-- 添加或修改出库申请对话框 -->
     <el-dialog :title="title" v-model="open" width="1000px" append-to-body>
       <el-form ref="outWarehouseApplyRef" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="单据号" prop="serialNo">
-          <el-input v-model="form.serialNo" placeholder="请输入单据号" />
-        </el-form-item>
-        <el-form-item label="关联单据号" prop="bizBillId">
-          <el-input v-model="form.bizBillNo" placeholder="请选择关联单据号" disabled>
-            <template #append>
-              <el-button v-no-more-click @click="selectBillNoOpen()">选择</el-button>
-            </template>
-          </el-input>
-        </el-form-item>
+        <el-row>
+          <el-form-item label="单据号" prop="serialNo">
+            <el-input v-model="form.serialNo" placeholder="系统自动生成" disabled />
+          </el-form-item>
+          <el-form-item label="关联单据号" prop="bizBillId">
+            <el-input v-model="form.bizBillNo" placeholder="请选择关联单据号" disabled>
+              <template #append>
+                <el-button v-no-more-click @click="selectBillNoOpen()">选择</el-button>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-row>
         <el-form-item label="业务类型" prop="bizType">
           <el-select v-model="form.bizType" placeholder="请选择业务类型">
             <el-option v-for="dict in event_type" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>

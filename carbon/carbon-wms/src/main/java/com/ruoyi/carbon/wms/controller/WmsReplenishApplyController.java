@@ -2,9 +2,11 @@ package com.ruoyi.carbon.wms.controller;
 
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
+import com.ruoyi.carbon.wms.domain.WmsMaterialInfo;
 import com.ruoyi.carbon.wms.domain.WmsOutWarehouseApply;
 import com.ruoyi.carbon.wms.domain.WmsReplenishApply;
 import com.ruoyi.carbon.wms.domain.WmsReplenishApplyDetail;
+import com.ruoyi.carbon.wms.service.IWmsMaterialInfoService;
 import com.ruoyi.carbon.wms.service.IWmsReplenishApplyService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
@@ -38,6 +40,8 @@ import java.util.List;
 public class WmsReplenishApplyController extends BaseController {
     @Autowired
     private IWmsReplenishApplyService wmsReplenishApplyService;
+    @Autowired
+    private IWmsMaterialInfoService wmsMaterialInfoService;
 
     /**
      * 查询补货申请列表
@@ -116,6 +120,19 @@ public class WmsReplenishApplyController extends BaseController {
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         WmsReplenishApply apply = wmsReplenishApplyService.selectWmsReplenishApplyById(id);
         List<WmsReplenishApplyDetail> applyDetail = apply.getWmsReplenishApplyDetailList();
+
+        // 获取物料信息
+        applyDetail.forEach(detail -> {
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(detail.getMaterialId());
+            if (materialInfo != null) {
+                detail.setMaterialName(materialInfo.getName());
+                detail.setMaterialModel(materialInfo.getModel());
+                detail.setMaterialUnit(materialInfo.getUnit());
+                detail.setMaterialSpecification(materialInfo.getSpecification());
+                detail.setMaterialCode(materialInfo.getCode());
+            }
+        });
+
         return AjaxResult.success(apply);
     }
 

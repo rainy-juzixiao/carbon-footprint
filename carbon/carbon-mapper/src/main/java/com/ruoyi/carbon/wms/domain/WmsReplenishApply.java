@@ -17,7 +17,6 @@ import java.util.List;
  * @date 2022-07-20
  */
 @ApiModel("补货申请")
-@Data
 public class WmsReplenishApply extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -82,4 +81,99 @@ public class WmsReplenishApply extends BaseEntity
     @Excel(name = "是否生成采购申请1是0否")
     private String purchaseApplyFlag;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSerialNo() {
+        return serialNo;
+    }
+
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getApplyUser() {
+        return applyUser;
+    }
+
+    public void setApplyUser(String applyUser) {
+        this.applyUser = applyUser;
+    }
+
+    public Date getApplyTime() {
+        return applyTime;
+    }
+
+    public void setApplyTime(Date applyTime) {
+        this.applyTime = applyTime;
+    }
+
+    public String getApplyStatus() {
+        return applyStatus;
+    }
+
+    public void setApplyStatus(String applyStatus) {
+        this.applyStatus = applyStatus;
+    }
+
+    public String getAuditUser() {
+        return auditUser;
+    }
+
+    public void setAuditUser(String auditUser) {
+        this.auditUser = auditUser;
+    }
+
+    public Date getAuditTime() {
+        return auditTime;
+    }
+
+    public void setAuditTime(Date auditTime) {
+        this.auditTime = auditTime;
+    }
+
+    public String getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(String auditStatus) {
+        this.auditStatus = auditStatus;
+    }
+
+    public String getAuditComment() {
+        return auditComment;
+    }
+
+    public void setAuditComment(String auditComment) {
+        this.auditComment = auditComment;
+    }
+
+    public List<WmsReplenishApplyDetail> getWmsReplenishApplyDetailList() {
+        return wmsReplenishApplyDetailList;
+    }
+
+    public void setWmsReplenishApplyDetailList(List<WmsReplenishApplyDetail> wmsReplenishApplyDetailList) {
+        this.wmsReplenishApplyDetailList = wmsReplenishApplyDetailList;
+    }
+
+    public String getPurchaseApplyFlag() {
+        return purchaseApplyFlag;
+    }
+
+    public void setPurchaseApplyFlag(String purchaseApplyFlag) {
+        this.purchaseApplyFlag = purchaseApplyFlag;
+    }
 }

@@ -2,6 +2,9 @@ package com.ruoyi.common.utils.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -130,12 +133,18 @@ public class FileUploadUtils
 
     private static final File getAbsoluteFile(String uploadDir, String fileName) throws IOException
     {
-        File desc = new File(uploadDir + File.separator + fileName);
-
-        if (!desc.getParentFile().exists())
+        Path basePath = Paths.get(uploadDir).toAbsolutePath().normalize();
+        Path descPath = basePath.resolve(fileName).normalize();
+        if (!descPath.startsWith(basePath))
         {
-            desc.getParentFile().mkdirs();
+            throw new IOException("文件路径超出上传目录");
         }
+        Path parentPath = descPath.getParent();
+        if (parentPath != null)
+        {
+            Files.createDirectories(parentPath);
+        }
+        File desc = descPath.toFile();
         if (!desc.exists())
         {
             desc.createNewFile();

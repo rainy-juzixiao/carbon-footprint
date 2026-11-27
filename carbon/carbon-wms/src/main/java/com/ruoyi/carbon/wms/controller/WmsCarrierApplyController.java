@@ -2,9 +2,12 @@ package com.ruoyi.carbon.wms.controller;
 
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
+import com.ruoyi.carbon.scm.service.IScmSaleContractService;
 import com.ruoyi.carbon.wms.domain.WmsCarrierApply;
 import com.ruoyi.carbon.wms.domain.WmsCarrierApplyDetail;
+import com.ruoyi.carbon.wms.domain.WmsMaterialInfo;
 import com.ruoyi.carbon.wms.service.IWmsCarrierApplyService;
+import com.ruoyi.carbon.wms.service.IWmsMaterialInfoService;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
@@ -36,6 +39,8 @@ import java.util.List;
 public class WmsCarrierApplyController extends BaseController {
     @Autowired
     private IWmsCarrierApplyService wmsCarrierApplyService;
+    @Autowired
+    private IWmsMaterialInfoService wmsMaterialInfoService;
 
     /**
      * 查询承运申请列表
@@ -110,7 +115,15 @@ public class WmsCarrierApplyController extends BaseController {
     public AjaxResult getInfo(@PathVariable("id") Long id) {
         WmsCarrierApply apply = wmsCarrierApplyService.selectWmsCarrierApplyById(id);
         List<WmsCarrierApplyDetail> applyDetail = apply.getWmsCarrierApplyDetailList();
-
+        applyDetail.forEach(detail -> {
+            WmsMaterialInfo materialInfo = wmsMaterialInfoService.selectWmsMaterialInfoById(detail.getMaterialId());
+            if (materialInfo != null) {
+                detail.setMaterialName(materialInfo.getName());
+                detail.setMaterialModel(materialInfo.getModel());
+                detail.setMaterialUnit(materialInfo.getUnit());
+                detail.setMaterialSpecification(materialInfo.getSpecification());
+            }
+        });
         return AjaxResult.success(apply);
     }
 

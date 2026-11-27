@@ -144,17 +144,17 @@
           <el-input v-model="form.batchNo" placeholder="" disabled/>
         </el-form-item>
         <el-form-item label="库存月份" prop="stockMonth">
-          <el-date-picker v-model="form.stockMonth" value-format="yyyy-MM" type="month" placeholder="请输入库存月份">
+          <el-date-picker v-model="form.stockMonth" value-format="YYYY-MM" type="month" placeholder="请输入库存月份">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="现库存" prop="inventory">
-          <el-input v-model.number="form.inventory" placeholder="" disabled/>
+          <el-input v-model.number="form.inventory" placeholder=""/>
         </el-form-item>
         <el-form-item label="实际库存" prop="actualInventory">
           <el-input v-model.number="form.actualInventory" placeholder="请输入实际库存"/>
         </el-form-item>
         <el-form-item label="盘点日期" prop="checkDate">
-          <el-date-picker clearable v-model="form.checkDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"
+          <el-date-picker clearable v-model="form.checkDate" type="datetime" value-format="YYYY-MM-DD HH:mm:ss"
                           placeholder="选择盘点日期">
           </el-date-picker>
         </el-form-item>

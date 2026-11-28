@@ -86,7 +86,18 @@ export const constantRoutes = [
             path: '/bid/biddingInfo',
             component: () => import('@/views/enterprise/biddingInfo.vue')
           },
-
+          {
+            path: '/member/list',
+            component: () => import('@/views/member/list.vue')
+          },
+          {
+            path: '/member/product-equity-comparison',
+            component: () => import('@/views/member/product-equity-comparison.vue')
+          },
+          {
+            path: '/member/recharge',
+            component: () => import('@/views/member/recharge.vue')
+          },
           {
             path: '/bid/list',
             component: () => import('@/views/bid/list.vue')
